@@ -16,9 +16,9 @@ game_title := "2004Scape Game"
 
 ;; CONFIG
 if (!FileExist("metro-settings.ini")) {
-	IniWrite, 6, metro-settings.ini, settings, loop_tick
-	IniWrite, 1, metro-settings.ini, settings, show_counter
-	IniWrite, "2004Scape game", metro-settings.ini, settings, game_title
+	IniWrite, %loop_tick%, metro-settings.ini, settings, loop_tick
+	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
+	IniWrite, %game_title%, metro-settings.ini, settings, game_title
 }
 
 Gui, settings:New, -Border +ToolWindow +AlwaysOnTop +hwndsettings_hwnd
