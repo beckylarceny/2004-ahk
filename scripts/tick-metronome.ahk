@@ -57,7 +57,7 @@ Gui, metro:Color, Black
 Gui, metro:Font, s%metro_font_size% q5 cWhite
 Gui, metro:Add, Text, 0x200 center vCounter w%metro_w% h%metro_h%, % formatted_counter(tick_counter)
 
-WinGetPos, game_x, game_y, game_w, game_h, ahk_exe lc-launcher.exe
+WinGetPos, game_x, game_y, game_w, game_h, %game_title%
 WinMove, ahk_id %metro_hwnd%, , game_x + (game_w / 2) - (metro_w / 2), game_y + (game_h / 2) - (metro_h / 2)
 
 GoSub, open_settings_window
@@ -66,7 +66,7 @@ SetTimer, move_with_game, 100
 SetTimer, tick_pacemaker, 600
 
 move_with_game:
-	WinGetPos, game_new_x, game_new_y, , , ahk_exe lc-launcher.exe
+	WinGetPos, game_new_x, game_new_y, , , %game_title%
 	WinGetPos, metro_x, metro_y, , , ahk_id %metro_hwnd%
 
 	if (game_new_x != game_x || game_new_y != game_y) {
