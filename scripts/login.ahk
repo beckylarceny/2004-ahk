@@ -29,8 +29,8 @@ SetTimer, refresh_window_highf, 50
 
 refresh_window_lowf:
 	WinGetPos, lc_x, lc_y, lc_w, lc_h, %lostcity_title%
-	lc_x += lc_w - 300 - (24 * 0)
-	lc_y += 4
+	lc_x += lc_w - 24 - 8
+	lc_y += 32 + (24 * 0)
 
 	WinMove, ahk_id %gui_hwnd%, , %lc_x%, %lc_y%
 	return
