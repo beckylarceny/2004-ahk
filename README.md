@@ -42,8 +42,6 @@ Sets the 2 rows of keys above the arrow keys + the row of keys above the Return 
 
 **For each one of the previous scripts: click on the button with its initial letter to enable/disable it**
 
-**
-
 ***
 
 ### tick-metronome.ahk
@@ -54,4 +52,4 @@ Helpful tick visualizer.
 
 ***
 
-**All of these scripts stick to the game client window**
+**All of these scripts are made for, and stick to the standalone game client window**
