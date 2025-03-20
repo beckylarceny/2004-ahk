@@ -66,6 +66,12 @@ SetTimer, move_with_game, 100
 SetTimer, tick_pacemaker, 600
 
 move_with_game:
+	if (!WinActive(game_title)) {
+		Gui, metro:Show, Hide
+	} else {
+		Gui, metro:Show, NA
+	}
+
 	WinGetPos, game_new_x, game_new_y, , , %game_title%
 	WinGetPos, metro_x, metro_y, , , ahk_id %metro_hwnd%
 
@@ -185,7 +191,6 @@ open_settings_window:
 	GuiControl, settings:, timestamp_text, %timestamp%
 
 	WinWaitClose, ahk_id %settings_hwnd%
-	Gui, settings:Submit
 	Gui, metro:Show, w%metro_w% h%metro_h%
 	return
 
