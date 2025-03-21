@@ -31,7 +31,7 @@ Gui, settings:Add, Text, xm, Game title:
 Gui, settings:Add, Edit, x+5 w150 vgame_title
 Gui, settings:Font, s14 w1000
 Gui, settings:Add, Button, xm gexit, Exit
-Gui, settings:Add, Button, x+5 gsave_settings, Save
+Gui, settings:Add, Button, x+5 gsave_settings_and_close, Save
 Gui, settings:Font, s12 w400
 GoSub, update_timestamp
 Gui, settings:Add, Text, xm w200 vtimestamp_text, % timestamp
@@ -172,21 +172,16 @@ open_settings_window:
 	GuiControl, settings:, timestamp_text, %timestamp%
 
 	WinWaitClose, ahk_id %settings_hwnd%
-	Gui, settings:Submit
 	Gui, metro:Show, w%metro_w% h%metro_h%
 	return
 
-save_settings:
-	Gui, setting:Submit
+save_settings_and_close:
+	Gui, settings:Submit
 	GoSub, write_settings_to_file
-	WinClose, ahk_id %settings_hwnd%
 	return
 
 exit:
-	Gui, settings:Submit
-	IniWrite, %loop_tick%, metro-settings.ini, settings, loop_tick
-	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
-	IniWrite, %game_title%, metro-settings.ini, settings, game_title
+	GoSub, save_settings_and_close
 	ExitApp
 	return
 
