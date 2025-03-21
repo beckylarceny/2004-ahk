@@ -36,20 +36,19 @@ refresh_window_highf:
   WinGetTitle, ms_title, ahk_id %ms_hwnd%
   cur_active := WinActive(lostcity_title)
   ms_lostcity := ms_title == lostcity_title
-	if cur_active {
-    if (cur_active != prev_active) {
+  if (cur_active != prev_cur_active) {
+    if (cur_active) {
+      if (running && (ms_lostcity != prev_ms_lostcity)) {
+        if (ms_lostcity) {
+          Send, {LCtrl down}
+        } else {
+          Send, {LCtrl up}
+        }
+      }
       Gui, runorb:Show, NA
-    }
-	} else {
-    if (cur_active != prev_active) {
-      Gui, runorb:Show, Hide
-    }
-	}
-  if (running && (ms_lostcity != prev_ms_lostcity)) {
-    if (!ms_lostcity) {
-      Send, {LCtrl up}
     } else {
-      Send, {LCtrl down}
+      Send, {LCtrl up}
+      Gui, runorb:Show, Hide
     }
   }
   prev_active := cur_active
