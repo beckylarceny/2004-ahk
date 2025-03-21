@@ -16,9 +16,7 @@ game_title := "2004Scape Game"
 
 ;; CONFIG
 if (!FileExist("metro-settings.ini")) {
-	IniWrite, %loop_tick%, metro-settings.ini, settings, loop_tick
-	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
-	IniWrite, %game_title%, metro-settings.ini, settings, game_title
+	GoSub, write_settings_to_file
 }
 
 Gui, settings:New, -Border +ToolWindow +AlwaysOnTop +hwndsettings_hwnd
@@ -33,14 +31,12 @@ Gui, settings:Add, Text, xm, Game title:
 Gui, settings:Add, Edit, x+5 w150 vgame_title
 Gui, settings:Font, s14 w1000
 Gui, settings:Add, Button, xm gexit, Exit
-Gui, settings:Add, Button, x+5 gsave, Save
+Gui, settings:Add, Button, x+5 gsave_settings, Save
 Gui, settings:Font, s12 w400
 GoSub, update_timestamp
 Gui, settings:Add, Text, xm w200 vtimestamp_text, % timestamp
 
-IniRead, loop_tick, metro-settings.ini, settings, loop_tick
-IniRead, show_counter, metro-settings.ini, settings, show_counter
-IniRead, game_title, metro-settings.ini, settings, game_title
+GoSub, read_settings_from_file
 
 ;; METRONOME
 tick_counter := 0
@@ -65,6 +61,7 @@ GoSub, open_settings_window
 SetTimer, move_with_game, 100
 SetTimer, tick_pacemaker, 600
 
+;; SUBROUTINES
 move_with_game:
 	WinGetPos, game_new_x, game_new_y, , , %game_title%
 	WinGetPos, metro_x, metro_y, , , ahk_id %metro_hwnd%
@@ -142,31 +139,21 @@ formatted_counter(num) {
 	}
 }
 
-;; CONTROLS
-~LButton::
-	MouseGetPos, , , cursor_win
-	if (cursor_win = metro_hwnd) {
-		GoSub, move_window
-	}
-	return
-
-~RButton::
-	MouseGetPos, , , cursor_win
-	if (cursor_win = metro_hwnd) {
-		GoSub, reset_tick_pacemaker
-	}
-	return
-
-~MButton::
-	MouseGetPos, , , cursor_win
-	if (cursor_win = metro_hwnd) {
-		GoSub, open_settings_window
-	}
-	return
-
 update_timestamp:
 	tick_counter_copy := tick_counter
 	timestamp := "" . tick_counter_copy . " tick" . ((tick_counter_copy > 1) ? "s" : "") . " | " . Floor((tick_counter_copy * 0.6) / (60 * 60)) . "H " . Floor(Mod((tick_counter_copy * 0.6) / 60, 60)) . "M " . Format("{1:.4}", Mod(tick_counter_copy * 0.6, 60)) . "S "
+	return
+
+write_settings_to_file:
+	IniWrite, %loop_tick%, metro-settings.ini, settings, loop_tick
+	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
+	IniWrite, %game_title%, metro-settings.ini, settings, game_title
+	return
+
+read_settings_from_file:
+	IniRead, loop_tick, metro-settings.ini, settings, loop_tick
+	IniRead, show_counter, metro-settings.ini, settings, show_counter
+	IniRead, game_title, metro-settings.ini, settings, game_title
 	return
 
 open_settings_window:
@@ -189,8 +176,9 @@ open_settings_window:
 	Gui, metro:Show, w%metro_w% h%metro_h%
 	return
 
-save:
+save_settings:
 	Gui, setting:Submit
+	GoSub, write_settings_to_file
 	WinClose, ahk_id %settings_hwnd%
 	return
 
@@ -200,4 +188,26 @@ exit:
 	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
 	IniWrite, %game_title%, metro-settings.ini, settings, game_title
 	ExitApp
+	return
+
+;; CONTROLS
+~LButton::
+	MouseGetPos, , , cursor_win
+	if (cursor_win = metro_hwnd) {
+		GoSub, move_window
+	}
+	return
+
+~RButton::
+	MouseGetPos, , , cursor_win
+	if (cursor_win = metro_hwnd) {
+		GoSub, reset_tick_pacemaker
+	}
+	return
+
+~MButton::
+	MouseGetPos, , , cursor_win
+	if (cursor_win = metro_hwnd) {
+		GoSub, open_settings_window
+	}
 	return
