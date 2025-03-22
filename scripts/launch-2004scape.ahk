@@ -4,6 +4,11 @@ game_w := 806
 game_h := 598
 metro_x := 488
 metro_y := 383
+start_metronome := 1
+start_login := 1
+start_mousecam := 1
+start_wmk := 1
+start_runorb := 1
 show_metro_settings_on_startup := 1
 
 if (!FileExist("launch-settings.ini")) {
@@ -16,23 +21,36 @@ Run, ".\lc-launcher.exe.lnk", , , game_pid
 WinWait, ahk_pid %game_pid%
 WinMove, ahk_pid %game_pid%, , game_x, game_y, game_w, game_h
 
-Run, ".\tick-metronome.ahk" %game_pid%, , , metro_pid
-if (FileExist("metro-settings.ini")) {
-  IniRead, show_metro_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
+if (start_metronome) {
+	Run, ".\tick-metronome.ahk" %game_pid%, , , metro_pid
+	if (FileExist("metro-settings.ini")) {
+		IniRead, show_metro_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
+	}
+	if(show_metro_settings_on_startup) {
+		WinWait, tick-metronome Settings ahk_class AutoHotkeyGUI
+		WinWaitClose, tick-metronome Settings ahk_class AutoHotkeyGUI
+	}
+	if (!WinExist("tick-metronome.ahk ahk_class AutoHotkeyGUI")) {
+		WinWait, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y 
+	}
+	WinMove, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y
 }
-if(show_metro_settings_on_startup) {
-  WinWait, tick-metronome Settings ahk_class AutoHotkeyGUI
-  WinWaitClose, tick-metronome Settings ahk_class AutoHotkeyGUI
-}
-if (!WinExist("tick-metronome.ahk ahk_class AutoHotkeyGUI")) {
-	WinWait, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y 
-}
-WinMove, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y
 
-Run, ".\login.ahk", , , login_pid
-Run, ".\mousecam.ahk", , , mousecam_pid
-Run, ".\wmk.ahk", , , wmk_pid
-Run, ".\runorb.ahk", , , runorb_pid
+if (start_login) {
+	Run, ".\login.ahk", , , login_pid
+}
+
+if (start_mousecam) {
+	Run, ".\mousecam.ahk", , , mousecam_pid
+}
+
+if (start_wmk) {
+	Run, ".\wmk.ahk", , , wmk_pid
+}
+
+if (start_runorb) {
+	Run, ".\runorb.ahk", , , runorb_pid
+}
 
 SetTimer, get_game_pos, 1000
 
@@ -61,6 +79,11 @@ write_settings_to_file:
 	IniWrite, %game_h%, launch-settings.ini, metronome_settings, game_h
 	IniWrite, %metro_x%, launch-settings.ini, metronome_settings, metro_x
 	IniWrite, %metro_y%, launch-settings.ini, metronome_settings, metro_y
+	IniWrite, %start_metronome%, launch-settings.ini, metronome_settings, start_metronome
+	IniWrite, %start_login%, launch-settings.ini, metronome_settings, start_login
+	IniWrite, %start_mousecam%, launch-settings.ini, metronome_settings, start_mousecam
+	IniWrite, %start_wmk%, launch-settings.ini, metronome_settings, start_wmk
+	IniWrite, %start_runorb%, launch-settings.ini, metronome_settings, start_runorb
 	return
 
 read_settings_from_file:
@@ -70,11 +93,16 @@ read_settings_from_file:
 	IniRead, game_h, launch-settings.ini, metronome_settings, game_h
 	IniRead, metro_x, launch-settings.ini, metronome_settings, metro_x
 	IniRead, metro_y, launch-settings.ini, metronome_settings, metro_y
+	IniRead, start_metronome, launch-settings.ini, metronome_settings, start_metronome
+	IniRead, start_login, launch-settings.ini, metronome_settings, start_login
+	IniRead, start_mousecam, launch-settings.ini, metronome_settings, start_mousecam
+	IniRead, start_wmk, launch-settings.ini, metronome_settings, start_wmk
+	IniRead, start_runorb, launch-settings.ini, metronome_settings, start_runorb
 	return
 
 ; https://www.autohotkey.com/boards/viewtopic.php?p=70273&sid=ceb82e0f23176ab20429ed1b7a8d0da5#p70273
 KillChildProcesses(ParentPidOrExe){
-	static Processes, i
+	tatic Processes, i
 	ParentPID:=","
 	If !(Processes)
 		Processes:=ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process")
