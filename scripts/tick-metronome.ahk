@@ -10,13 +10,13 @@ CoordMode, Pixel, Client
 CoordMode, Mouse, Screen
 SetTitleMatchMode, 2
 
+;; CONFIG
 loop_tick := 6
 show_counter := 1
 game_title := "2004Scape"
 game_title_is_managed := 0
 show_settings_on_startup := 1
 
-;; CONFIG
 if (A_Args[1]) {
 	game_title_is_managed := 1
 	game_title := A_Args[1]
