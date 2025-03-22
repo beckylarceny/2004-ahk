@@ -102,7 +102,7 @@ read_settings_from_file:
 
 ; https://www.autohotkey.com/boards/viewtopic.php?p=70273&sid=ceb82e0f23176ab20429ed1b7a8d0da5#p70273
 KillChildProcesses(ParentPidOrExe){
-	tatic Processes, i
+	static Processes, i
 	ParentPID:=","
 	If !(Processes)
 		Processes:=ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process")
