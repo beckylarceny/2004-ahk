@@ -4,13 +4,13 @@ CoordMode, Pixel, Client
 CoordMode, Mouse, Client
 SetTitleMatchMode, 2
 
-if (!FileExist("login.ini")) {
-	IniWrite, "", login.ini, credentials, username
-	IniWrite, "", login.ini, credentials, password
-	MsgBox, % "Write your login details in the 'login.ini' file generated in this folder.`nBoth fields are optional (don't write your password in plain text if you don't want to)"
+if (!FileExist("login-settings.ini")) {
+	IniWrite, "", login-settings.ini, credentials, username
+	IniWrite, "", login-settings.ini, credentials, password
+	MsgBox, % "Write your login details in the 'login-settings.ini' file generated in this folder.`nBoth fields are optional (don't write your password in plain text if you don't want to)"
 }
-IniRead, username, login.ini, credentials, username
-IniRead, password, login.ini, credentials, password
+IniRead, username, login-settings.ini, credentials, username
+IniRead, password, login-settings.ini, credentials, password
 
 ;; GUI
 active := True
