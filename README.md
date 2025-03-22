@@ -9,8 +9,6 @@ Launches the game and all my scripts, moves and resizes the game window to my pr
 
 **This needs you to place an "lc-launcher.exe" shortcut in this folder**
 
-*TODO: Make a config file for this*
-
 ***
 
 ### login.ahk
