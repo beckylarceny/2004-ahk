@@ -69,7 +69,9 @@ Gui, metro:Font, s%metro_font_size% q5 cWhite
 Gui, metro:Add, Text, 0x200 center vCounter w%metro_w% h%metro_h%, % formatted_counter(tick_counter)
 
 WinGetPos, game_x, game_y, game_w, game_h, %game_title%
-WinMove, ahk_id %metro_hwnd%, , game_x + (game_w / 2) - (metro_w / 2), game_y + (game_h / 2) - (metro_h / 2)
+if (!game_title_is_managed) {
+	WinMove, ahk_id %metro_hwnd%, , game_x + (game_w / 2) - (metro_w / 2), game_y + (game_h / 2) - (metro_h / 2)
+}
 
 if (show_settings_on_startup) {
 	GoSub, open_settings_window

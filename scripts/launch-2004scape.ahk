@@ -4,33 +4,35 @@ game_w := 806
 game_h := 598
 metro_x := 488
 metro_y := 383
+show_metro_settings_on_startup := 1
 
-if (!FileExist("metro-settings.ini")) {
+if (!FileExist("launch-settings.ini")) {
 	GoSub, write_settings_to_file
 } else {
 	GoSub, read_settings_from_file
 }
 
 Run, ".\lc-launcher.exe.lnk", , , game_pid
+WinWait, ahk_pid %game_pid%
+WinMove, ahk_pid %game_pid%, , game_x, game_y, game_w, game_h
+
 Run, ".\tick-metronome.ahk" %game_pid%, , , metro_pid
+if (FileExist("metro-settings.ini")) {
+  IniRead, show_metro_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
+}
+if(show_metro_settings_on_startup) {
+  WinWait, tick-metronome Settings ahk_class AutoHotkeyGUI
+  WinWaitClose, tick-metronome Settings ahk_class AutoHotkeyGUI
+}
+if (!WinExist("tick-metronome.ahk ahk_class AutoHotkeyGUI")) {
+	WinWait, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y 
+}
+WinMove, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y
+
 Run, ".\login.ahk", , , login_pid
 Run, ".\mousecam.ahk", , , mousecam_pid
 Run, ".\wmk.ahk", , , wmk_pid
 Run, ".\runorb.ahk", , , runorb_pid
-
-WinWait, ahk_pid %game_pid%
-WinMove, ahk_pid %game_pid%, , game_x, game_y, game_w, game_h
-
-if (FileExist("metro-settings.ini")) {
-  IniRead, show_metro_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
-}
-if(!FileExist("metro-settings.ini") || show_metro_settings_on_startup) {
-  WinWait, tick-metronome Settings
-  WinWaitClose, tick-metronome Settings ahk_class AutoHotkeyGUI
-}
-metro_x += game_x 
-metro_y += game_y 
-WinMove, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y, , 
 
 SetTimer, get_game_pos, 1000
 
@@ -38,9 +40,7 @@ SetTimer, get_game_pos, 1000
 WinWaitClose, ahk_pid %game_pid%
 
 SetTimer, get_game_pos, Off
-WinGetPos, tick-metronome ahk_class AutoHotkeyGUI, , metro_x, metro_y
-metro_x -= game_x
-metro_y -= game_y
+WinGetPos, metro_x, metro_y, , , tick-metronome ahk_class AutoHotkeyGUI
 GoSub, write_settings_to_file
 
 KillChildProcesses(metro_pid)
