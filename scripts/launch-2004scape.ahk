@@ -1,5 +1,5 @@
 ﻿Run, ".\lc-launcher.exe.lnk", , , game_pid
-Run, ".\tick-metronome.ahk", , , metro_pid
+Run, ".\tick-metronome.ahk" %game_pid%, , , metro_pid
 Run, ".\login.ahk", , , login_pid
 Run, ".\mousecam.ahk", , , mousecam_pid
 Run, ".\wmk.ahk", , , wmk_pid
@@ -15,7 +15,9 @@ wmk_child_pid := GetFirstChild(wmk_pid)
 runorb_child_pid := GetFirstChild(runorb_pid)
 
 WinGetPos, client_x, client_y, , , ahk_pid %game_pid%
-WinMove, ahk_pid %metro_child_pid%, , client_x + 487, client_y + 350, , 
+metro_x := client_x + 487
+metro_y := client_y + 350
+WinMove, ahk_pid %metro_child_pid%, , metro_x, metro_y, , 
 
 WinWaitClose, ahk_pid %game_pid%
 KillChildProcesses(metro_pid)

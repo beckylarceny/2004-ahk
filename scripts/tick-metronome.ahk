@@ -12,9 +12,16 @@ SetTitleMatchMode, 2
 
 loop_tick := 6
 show_counter := 1
-game_title := "2004Scape Game"
+game_title := "2004Scape"
+game_title_is_managed := 0
+show_settings_on_startup := 1
 
 ;; CONFIG
+if (A_Args[1]) {
+	game_title_is_managed := 1
+	game_title := A_Args[1]
+}
+
 if (!FileExist("metro-settings.ini")) {
 	GoSub, write_settings_to_file
 }
@@ -28,7 +35,15 @@ Gui, settings:Add, Checkbox, x+5 vshow_counter
 Gui, settings:Add, Text, xm, Looping count: 
 Gui, settings:Add, Edit, x+5 Number W20 Limit2 vloop_tick
 Gui, settings:Add, Text, xm, Game title: 
-Gui, settings:Add, Edit, x+5 w150 vgame_title
+if (game_title_is_managed) { 
+	Gui, settings:Font, cRed
+	Gui, settings:Add, Text, x+5, %game_title%
+	Gui, settings:Font, cBlack
+} else {
+	Gui, settings:Add, Edit, x+5 w150 vgame_title
+}
+Gui, settings:Add, Text, xm, Show settings on startup: 
+Gui, settings:Add, Checkbox, x+5 vshow_settings_on_startup
 Gui, settings:Font, s14 w1000
 Gui, settings:Add, Button, xm gexit, Exit
 Gui, settings:Add, Button, x+5 gsave_settings_and_close, Save
@@ -56,7 +71,11 @@ Gui, metro:Add, Text, 0x200 center vCounter w%metro_w% h%metro_h%, % formatted_c
 WinGetPos, game_x, game_y, game_w, game_h, %game_title%
 WinMove, ahk_id %metro_hwnd%, , game_x + (game_w / 2) - (metro_w / 2), game_y + (game_h / 2) - (metro_h / 2)
 
-GoSub, open_settings_window
+if (show_settings_on_startup) {
+	GoSub, open_settings_window
+} else {
+	GoSub, show_metronome
+}
 
 SetTimer, move_with_game, 100
 SetTimer, tick_pacemaker, 600
@@ -142,24 +161,27 @@ formatted_counter(num) {
 update_timestamp:
 	tick_counter_copy := tick_counter
 	timestamp := "" . tick_counter_copy . " tick" . ((tick_counter_copy > 1) ? "s" : "") . " | " . Floor((tick_counter_copy * 0.6) / (60 * 60)) . "H " . Floor(Mod((tick_counter_copy * 0.6) / 60, 60)) . "M " . Format("{1:.4}", Mod(tick_counter_copy * 0.6, 60)) . "S "
-	return
+	return 
 
 write_settings_to_file:
 	IniWrite, %loop_tick%, metro-settings.ini, settings, loop_tick
 	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
 	IniWrite, %game_title%, metro-settings.ini, settings, game_title
+	IniWrite, %show_settings_on_startup%, metro-settings.ini, settings, show_settings_on_startup
 	return
 
 read_settings_from_file:
 	IniRead, loop_tick, metro-settings.ini, settings, loop_tick
 	IniRead, show_counter, metro-settings.ini, settings, show_counter
 	IniRead, game_title, metro-settings.ini, settings, game_title
+	IniRead, show_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
 	return
 
 open_settings_window:
 	GuiControl, settings:, show_counter, %show_counter%
 	GuiControl, settings:, loop_tick, %loop_tick%
 	GuiControl, settings:, game_title, %game_title%
+	GuiControl, settings:, show_settings_on_startup, %show_settings_on_startup%
 
 	WinGetPos, metro_x, metro_y, , , ahk_id %metro_hwnd%
 	if (metro_x == "") {
@@ -172,12 +194,16 @@ open_settings_window:
 	GuiControl, settings:, timestamp_text, %timestamp%
 
 	WinWaitClose, ahk_id %settings_hwnd%
-	Gui, metro:Show, w%metro_w% h%metro_h%
+	GoSub, show_metronome
 	return
 
 save_settings_and_close:
 	Gui, settings:Submit
 	GoSub, write_settings_to_file
+	return
+
+show_metronome:
+	Gui, metro:Show, w%metro_w% h%metro_h%
 	return
 
 exit:
