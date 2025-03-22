@@ -196,6 +196,7 @@ open_settings_window:
 	try {
 		Gui, settings:Show, x%metro_x% y%metro_y%, tick-metronome Settings
 	} catch e {
+		Gui, settings:Show, , tick-metronome Settings
 		; retarded bugs demand retarded fixes
 		; (Gui, settings:Show was still being passed metro_x and _y as empty strings
 		; even with an if statement guarding that very possibility)

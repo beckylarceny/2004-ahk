@@ -15,9 +15,10 @@ if (FileExist("metro-settings.ini")) {
   IniRead, show_metro_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
 }
 if(!FileExist("metro-settings.ini") || show_metro_settings_on_startup) {
-  WinWaitClose, tick-metronome Settings
+  WinWait, tick-metronome Settings
+  WinWaitClose, tick-metronome Settings ahk_class AutoHotkeyGUI
 }
-WinMove, tick-metronome.ahk, , metro_x, metro_y, , 
+WinMove, tick-metronome.ahk ahk_class AutoHotkeyGUI, , metro_x, metro_y, , 
 
 WinWaitClose, ahk_pid %game_pid%
 KillChildProcesses(metro_pid)
