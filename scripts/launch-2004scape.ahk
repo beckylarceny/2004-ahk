@@ -8,16 +8,16 @@ Run, ".\runorb.ahk", , , runorb_pid
 WinWait, ahk_pid %game_pid%
 WinMove, ahk_pid %game_pid%, , , , 806, 598
 
-metro_child_pid := GetFirstChild(metro_pid)
-login_child_pid := GetFirstChild(login_pid)
-mousecam_child_pid := GetFirstChild(mousecam_pid)
-wmk_child_pid := GetFirstChild(wmk_pid)
-runorb_child_pid := GetFirstChild(runorb_pid)
-
 WinGetPos, client_x, client_y, , , ahk_pid %game_pid%
 metro_x := client_x + 487
 metro_y := client_y + 350
-WinMove, ahk_pid %metro_child_pid%, , metro_x, metro_y, , 
+if (FileExist("metro-settings.ini")) {
+  IniRead, show_metro_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
+}
+if(!FileExist("metro-settings.ini") || show_metro_settings_on_startup) {
+  WinWaitClose, tick-metronome Settings
+}
+WinMove, tick-metronome.ahk, , metro_x, metro_y, , 
 
 WinWaitClose, ahk_pid %game_pid%
 KillChildProcesses(metro_pid)

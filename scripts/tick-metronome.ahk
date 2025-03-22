@@ -184,12 +184,14 @@ open_settings_window:
 	GuiControl, settings:, show_settings_on_startup, %show_settings_on_startup%
 
 	WinGetPos, metro_x, metro_y, , , ahk_id %metro_hwnd%
-	if (metro_x == "") {
-		metro_x := A_ScreenWidth / 2 - (metro_w / 2)
-		metro_y := A_ScreenHeight / 2 - (metro_h / 2)
-	}
 	Gui, metro:Show, Hide
-	Gui, settings:Show, x%metro_x% y%metro_y%, tick-metronome Settings
+	try {
+		Gui, settings:Show, x%metro_x% y%metro_y%, tick-metronome Settings
+	} catch e {
+		; retarded bugs demand retarded fixes
+		; (Gui, settings:Show was still being passed metro_x and _y as empty strings
+		; even with an if statement guarding that very possibility)
+	}
 	GoSub, update_timestamp
 	GuiControl, settings:, timestamp_text, %timestamp%
 
