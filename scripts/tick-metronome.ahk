@@ -82,7 +82,11 @@ SetTimer, tick_pacemaker, 600
 
 ;; SUBROUTINES
 move_with_game:
-	WinGetPos, game_new_x, game_new_y, , , %game_title%
+	if (game_title_is_managed) {
+		WinGetPos, game_new_x, game_new_y, , , ahk_pid %game_title%
+	} else {
+		WinGetPos, game_new_x, game_new_y, , , %game_title%
+	}
 	WinGetPos, metro_x, metro_y, , , ahk_id %metro_hwnd%
 
 	if (game_new_x != game_x || game_new_y != game_y) {
@@ -166,14 +170,18 @@ update_timestamp:
 write_settings_to_file:
 	IniWrite, %loop_tick%, metro-settings.ini, settings, loop_tick
 	IniWrite, %show_counter%, metro-settings.ini, settings, show_counter
-	IniWrite, %game_title%, metro-settings.ini, settings, game_title
+	if (!game_title_is_managed){
+		IniWrite, %game_title%, metro-settings.ini, settings, game_title
+	}
 	IniWrite, %show_settings_on_startup%, metro-settings.ini, settings, show_settings_on_startup
 	return
 
 read_settings_from_file:
 	IniRead, loop_tick, metro-settings.ini, settings, loop_tick
 	IniRead, show_counter, metro-settings.ini, settings, show_counter
-	IniRead, game_title, metro-settings.ini, settings, game_title
+	if (!game_title_is_managed){
+		IniRead, game_title, metro-settings.ini, settings, game_title
+	}
 	IniRead, show_settings_on_startup, metro-settings.ini, settings, show_settings_on_startup
 	return
 
