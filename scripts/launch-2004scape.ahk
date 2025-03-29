@@ -1,7 +1,7 @@
 ﻿game_x := 0
 game_y := 0
 game_w := 806
-game_h := 598
+game_h := 601
 metro_x := 488
 metro_y := 383
 start_metronome := 1
@@ -69,7 +69,7 @@ KillChildProcesses(runorb_pid)
 ExitApp
 
 get_game_pos:
-	WinGetPos, game_x, game_y, , , ahk_pid %game_pid%
+	WinGetPos, game_x, game_y, game_w, game_h, ahk_pid %game_pid%
 	return
 
 write_settings_to_file:
